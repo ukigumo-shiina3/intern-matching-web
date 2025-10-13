@@ -54,14 +54,6 @@ export default function SignIn(): React.JSX.Element {
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    {/* <Link
-                      href="/reset-password"
-                      className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                    >
-                      ※パスワードを忘れた方はこちら
-                    </Link> */}
-                  </div>
                   <div>
                     <Button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600">
                       ログイン
