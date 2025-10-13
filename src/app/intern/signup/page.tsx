@@ -8,7 +8,7 @@ import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 
-export default function SignUpForm() {
+export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const fieldOfStudiesOptions = [
@@ -49,16 +49,13 @@ export default function SignUpForm() {
     console.log("Selected value:", value);
   };
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
+    <div className="flex flex-col flex-1 pt-24 lg:w-1/2 w-full  overflow-y-auto no-scrollbar">
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
               新規会員登録
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              メールアドレスとパスワードを入力して新規登録してください！
-            </p>
           </div>
           <div>
             <form>
@@ -179,13 +176,14 @@ export default function SignUpForm() {
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                アカウントをお持ちの方{" "}
+                アカウントをお持ちの方は、
                 <Link
-                  href="/signin"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  href="/intern//signin"
+                  className="text-blue-500 hover:text-brand-600 dark:text-brand-400"
                 >
                   ログイン
                 </Link>
+                してください。
               </p>
             </div>
           </div>
