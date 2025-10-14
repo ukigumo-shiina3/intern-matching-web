@@ -1,5 +1,6 @@
 import ChevronLeftIcon from "./chevron-left.svg";
 import EyeIcon from "./eye.svg";
 import EyeCloseIcon from "./eye-close.svg";
+import PaperPlane from "./paper-plane.svg";
 
-export { ChevronLeftIcon, EyeIcon, EyeCloseIcon };
+export { ChevronLeftIcon, EyeIcon, EyeCloseIcon, PaperPlane };
