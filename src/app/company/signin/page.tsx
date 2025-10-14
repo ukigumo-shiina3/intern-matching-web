@@ -59,12 +59,11 @@ export default function SignIn(): React.JSX.Element {
                       ログイン
                     </Button>
                   </div>
-
                   <div className="mt-5">
                     <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                       アカウントをお持ちでない方は、
                       <Link
-                        href="/intern/signup"
+                        href="/company/signup"
                         className="text-blue-500 hover:text-brand-600 dark:text-brand-400"
                       >
                         新規登録

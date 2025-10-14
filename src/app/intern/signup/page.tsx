@@ -54,7 +54,7 @@ export default function SignUp(): React.JSX.Element {
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              新規会員登録
+              新規登録
             </h1>
           </div>
           <div>
@@ -168,7 +168,7 @@ export default function SignUp(): React.JSX.Element {
                 </div>
                 <div>
                   <Button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600">
-                    新規会員登録
+                    新規登録
                   </Button>
                 </div>
               </div>
