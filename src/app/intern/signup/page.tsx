@@ -49,8 +49,8 @@ export default function SignUp(): React.JSX.Element {
     console.log("Selected value:", value);
   };
   return (
-    <div className="flex flex-col flex-1 pt-24 lg:w-1/2 w-full  overflow-y-auto no-scrollbar">
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+    <div className="flex flex-col flex-1 pt-24 w-full  overflow-y-auto no-scrollbar">
+      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto px-4">
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
