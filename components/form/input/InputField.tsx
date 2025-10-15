@@ -8,6 +8,7 @@ interface InputProps {
   defaultValue?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  wrapperClassName?: string;
   min?: string;
   max?: string;
   step?: number;
@@ -25,6 +26,7 @@ const Input: FC<InputProps> = ({
   defaultValue,
   onChange,
   className = "",
+  wrapperClassName = "",
   min,
   max,
   step,
@@ -48,7 +50,7 @@ const Input: FC<InputProps> = ({
   }
 
   return (
-    <div className="relative">
+    <div className={`relative flex flex-col ${wrapperClassName}`}>
       <input
         type={type}
         id={id}

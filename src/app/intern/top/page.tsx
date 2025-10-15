@@ -20,9 +20,18 @@ export default function ChatScreen() {
         <div className="flex-1 p-4 overflow-y-auto"></div>
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-          <div className="flex gap-3 w-full">
-            <Input type="text" placeholder="メッセージを入力" className="" />
-            <PaperPlane className="flex items-center justify-center w-10 h-10 text-gray-500 dark:text-gray-400" />
+          <div className="flex gap-3 w-full items-center">
+            <Input
+              type="text"
+              placeholder="メッセージを入力"
+              wrapperClassName="flex-1"
+            />
+            <button
+              type="button"
+              className="flex items-center justify-center flex-shrink-0 w-10 h-10"
+            >
+              <PaperPlane className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            </button>
           </div>
         </div>
       </div>
