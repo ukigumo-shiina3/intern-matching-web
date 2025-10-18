@@ -4,15 +4,8 @@ import {
   User as FirebaseUser,
   UserCredential as FirebaseUserCredential,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  verifyPasswordResetCode,
-  confirmPasswordReset,
-  updateEmail,
 } from "firebase/auth";
 import cookies from "js-cookie";
-import { GetServerSidePropsContext } from "next";
-import { NextRouter } from "next/router";
-import nookies from "nookies";
 import firebase from "./initFirebase";
 
 export type User = {
@@ -35,34 +28,6 @@ export const setUser = async (fbUser: FirebaseUser): Promise<User> => {
   return user;
 };
 
-export const currentUser = (
-  ctx?: GetServerSidePropsContext
-): User | undefined => {
-  const cookie = nookies.get(ctx);
-  if (!cookie) {
-    throw new Error("unauthorized. Please auth first");
-  }
-  if (cookie["auth"]) {
-    try {
-      return JSON.parse(cookie["auth"]);
-    } catch {
-      return undefined;
-    }
-  }
-};
-
-export const authorize = async (
-  router: NextRouter,
-  path = "/auth/signin"
-): Promise<User> => {
-  const user = currentUser();
-  if (!user) {
-    await router.push(path);
-    return Promise.reject("unauthorized");
-  }
-  return user;
-};
-
 export const createFirebaseUser = async (
   email: string,
   password: string
@@ -79,53 +44,31 @@ export const loginFirebaseUser = async (
   const auth = getAuth(firebase);
   const user = await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      setUser(userCredential.user!);
       return userCredential.user;
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error("ログインエラー", error);
       return null;
     });
   return user;
 };
 
-export const logout = async (): Promise<void> => {
-  cookies.remove("auth");
-  const auth = getAuth(firebase);
-  await auth.signOut();
-};
+export const useAuth = () => {
+  const signIn = async (email: string, password: string): Promise<User> => {
+    const user = await loginFirebaseUser(email, password);
+    if (!user) {
+      throw new Error("無効な認証情報です");
+    }
+    return setUser(user);
+  };
 
-export const sendPassResetEmail = (email: string) => {
-  const auth = getAuth(firebase);
-  return sendPasswordResetEmail(auth, email);
-};
+  const signUp = async (email: string, password: string): Promise<User> => {
+    const credential = await createFirebaseUser(email, password);
+    return setUser(credential.user);
+  };
 
-export const verifyResetPassword = (oobCode: string) => {
-  const auth = getAuth(firebase);
-  return verifyPasswordResetCode(auth, oobCode);
-};
-
-export const confirmPassReset = (oobCode: string, password: string) => {
-  const auth = getAuth(firebase);
-  return confirmPasswordReset(auth, oobCode, password);
-};
-
-export const updateFirebaseEmail = async (
-  currentEmail: string,
-  newEmail: string,
-  password: string
-) => {
-  const auth = getAuth(firebase);
-  return new Promise<void>((resolve, reject) => {
-    signInWithEmailAndPassword(auth, currentEmail, password)
-      .then((credential) => {
-        updateEmail(credential.user, newEmail)
-          .then(() => resolve())
-          .catch((error) => {
-            reject(error);
-          });
-      })
-      .catch((error) => {
-        return reject(error);
-      });
-  });
+  return {
+    signIn,
+    signUp,
+  };
 };
