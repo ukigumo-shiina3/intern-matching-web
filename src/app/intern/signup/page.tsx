@@ -7,10 +7,24 @@ import Select from "../../../../components/form/Select";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
+import { useAuth } from "@/lib/firebase/utils";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [schoolName, setSchoolName] = useState("");
+  const [departmentName, setDepartmentName] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [schoolYear, setSchoolYear] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { signUp } = useAuth();
+  const router = useRouter();
   const fieldOfStudiesOptions = [
     { value: "law_policy", label: "法学・政策系" },
     { value: "economics_business", label: "経済・経営・商学系" },
@@ -45,8 +59,47 @@ export default function SignUp(): React.JSX.Element {
     { value: "graduated", label: "卒業済み" },
     { value: "other", label: "その他" },
   ];
-  const handleSelectChange = (value: string) => {
-    console.log("Selected value:", value);
+  const handleFieldOfStudyChange = (value: string) => {
+    setFieldOfStudy(value);
+  };
+
+  const handleSchoolYearChange = (value: string) => {
+    setSchoolYear(value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isChecked) {
+      toast.error("利用規約とプライバシーポリシーに同意してください");
+      return;
+    }
+
+    if (
+      !email ||
+      !password ||
+      !fullName ||
+      !schoolName ||
+      !departmentName ||
+      !fieldOfStudy ||
+      !schoolYear
+    ) {
+      toast.error("全ての必須項目を入力してください");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await signUp(email, password);
+      toast.success("アカウント登録が完了しました");
+      router.push("/");
+    } catch (error) {
+      console.error("新規登録エラー:", error);
+      toast.error("アカウント登録に失敗しました");
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className="flex flex-col flex-1 pt-24 w-full  overflow-y-auto no-scrollbar">
@@ -58,7 +111,7 @@ export default function SignUp(): React.JSX.Element {
             </h1>
           </div>
           <div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-5">
                 <div className="grid gap-5">
                   <div>
@@ -70,6 +123,9 @@ export default function SignUp(): React.JSX.Element {
                       id="email"
                       name="email"
                       placeholder="example@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
                   <div>
@@ -80,6 +136,9 @@ export default function SignUp(): React.JSX.Element {
                       <Input
                         placeholder="password"
                         type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
                       <span
                         onClick={() => setShowPassword(!showPassword)}
@@ -102,6 +161,9 @@ export default function SignUp(): React.JSX.Element {
                       id="full name"
                       name="full name"
                       placeholder="山田 太郎"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="sm:col-span-1">
@@ -113,6 +175,9 @@ export default function SignUp(): React.JSX.Element {
                       id="school name"
                       name="school name"
                       placeholder="慶應義塾大学"
+                      value={schoolName}
+                      onChange={(e) => setSchoolName(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="sm:col-span-1">
@@ -124,6 +189,9 @@ export default function SignUp(): React.JSX.Element {
                       id="department name"
                       name="department name"
                       placeholder="経済学部経済学科"
+                      value={departmentName}
+                      onChange={(e) => setDepartmentName(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="sm:col-span-1">
@@ -133,7 +201,7 @@ export default function SignUp(): React.JSX.Element {
                     <Select
                       options={fieldOfStudiesOptions}
                       placeholder="選択してください"
-                      onChange={handleSelectChange}
+                      onChange={handleFieldOfStudyChange}
                       className="dark:bg-dark-900"
                     />
                   </div>
@@ -144,7 +212,7 @@ export default function SignUp(): React.JSX.Element {
                     <Select
                       options={schoolYearsOptions}
                       placeholder="選択してください"
-                      onChange={handleSelectChange}
+                      onChange={handleSchoolYearChange}
                       className="dark:bg-dark-900"
                     />
                   </div>
@@ -167,8 +235,12 @@ export default function SignUp(): React.JSX.Element {
                   </p>
                 </div>
                 <div>
-                  <Button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600">
-                    新規登録
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? "登録中..." : "新規登録"}
                   </Button>
                 </div>
               </div>
