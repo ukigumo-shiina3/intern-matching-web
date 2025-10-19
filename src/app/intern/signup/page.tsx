@@ -10,6 +10,7 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/lib/firebase/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useCreateIntern } from "@/lib/graphql/mutations/useCreateIntern";
 
 export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,10 +22,10 @@ export default function SignUp(): React.JSX.Element {
   const [departmentName, setDepartmentName] = useState("");
   const [fieldOfStudy, setFieldOfStudy] = useState("");
   const [schoolYear, setSchoolYear] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const { signUp } = useAuth();
   const router = useRouter();
+  const { createIntern, loading } = useCreateIntern();
   const fieldOfStudiesOptions = [
     { value: "law_policy", label: "法学・政策系" },
     { value: "economics_business", label: "経済・経営・商学系" },
@@ -88,17 +89,24 @@ export default function SignUp(): React.JSX.Element {
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      await signUp(email, password);
+      const user = await signUp(email, password);
+
+      await createIntern({
+        firebaseUid: user.uid,
+        name: fullName,
+        email: email,
+        schoolName: schoolName,
+        majorName: departmentName,
+        fieldOfStudyId: fieldOfStudy,
+        schoolYearId: schoolYear,
+      }, user.token);
+
       toast.success("アカウント登録が完了しました");
       router.push("/");
     } catch (error) {
       console.error("新規登録エラー:", error);
       toast.error("アカウント登録に失敗しました");
-    } finally {
-      setIsLoading(false);
     }
   };
   return (
@@ -237,10 +245,10 @@ export default function SignUp(): React.JSX.Element {
                 <div>
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={loading}
                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isLoading ? "登録中..." : "新規登録"}
+                    {loading ? "登録中..." : "新規登録"}
                   </Button>
                 </div>
               </div>

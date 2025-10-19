@@ -33,8 +33,8 @@ export const createFirebaseUser = async (
   password: string
 ): Promise<FirebaseUserCredential> => {
   const auth = getAuth(firebase);
-  const user = createUserWithEmailAndPassword(auth, email, password);
-  return user;
+  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  return credential;
 };
 
 export const loginFirebaseUser = async (
