@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
 
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/graphql',
+        destination: 'http://localhost:8080/graphql',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
