@@ -134,6 +134,8 @@ export default function SignUp(): React.JSX.Element {
                       value={message}
                       onChange={(value) => setMessage(value)}
                       rows={6}
+                      placeholder={`【必須】弊社のソーシャルビジョンに共感していただける方／自ら役割を考え、行動できる方
+【歓迎】長期インターンにコミットできる方／事業作りに興味関心がある方`}
                     />
                   </div>
                   <div className="sm:col-span-1">
