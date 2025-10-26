@@ -1,0 +1,48 @@
+overwrite: true
+
+# スキーマ生成のためのエンドポイント or gqlファイル
+schema:
+  - "src/lib/graphql/schema.graphql"
+
+# query や mutation などを定義しているファイルのパス指定（複数可 | *.tsx 等のファイルも可）
+documents: "**/*.graphql"
+
+# コードジェネレータ設定
+generates:
+  src/lib/graphql.ts:
+    plugins:
+      # TS 対応
+      - "typescript"
+      # type 生成
+      - "typescript-operations"
+      # hooks, HoC など React like なインターフェースを生成
+      - "typescript-react-apollo"
+    config:
+      # typescript-react-apollo
+      # -------------------------------------------------------
+      ## 利用する Apollo Version
+      reactApolloVersion: 3
+      ## 結果の型を出力する
+      withResultType: true
+      ## Mutation の option を出力する
+      withMutationOptionsType: true
+      ## High Order Component を出力しない（非推奨）
+      withHOC: false
+      ## Data Component を出力しない
+      withComponent: false
+      ## useQuery をラップした Hooks を出力する
+      withHooks: true
+
+      # typescript
+      # -------------------------------------------------------
+      ## 型のプレフィックス
+      typesPrefix: 'G_'
+      ## Mutation,Query の optional field 出力する
+      avoidOptionals: false
+      ## __typenameフィールドの出力を抑制する
+      skipTypename: true
+      maybeValue: "T"
+
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
