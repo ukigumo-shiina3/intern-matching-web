@@ -32,11 +32,12 @@ generates:
       withComponent: false
       ## useQuery をラップした Hooks を出力する
       withHooks: true
+      useTypeImports: true
 
       # typescript
       # -------------------------------------------------------
       ## 型のプレフィックス
-      typesPrefix: 'G_'
+      typesPrefix: "G_"
       ## Mutation,Query の optional field 出力する
       avoidOptionals: false
       ## __typenameフィールドの出力を抑制する
