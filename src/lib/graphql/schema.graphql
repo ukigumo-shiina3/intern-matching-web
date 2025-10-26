@@ -105,6 +105,8 @@ type Query {
   messages(roomId: ID!): [Message!]!
   room(id: ID!): Room
   rooms(internId: ID, companyId: ID): [Room!]!
+  intern(firebaseUid: String, id: ID): Intern
+  company(firebaseUid: String, id: ID): Company
 }
 
 type Room {

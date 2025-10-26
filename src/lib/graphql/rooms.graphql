@@ -128,3 +128,32 @@ mutation CreateIntern($input: CreateInternInput!) {
     errors
   }
 }
+
+query GetCurrentIntern($firebaseUid: String!) {
+  intern(firebaseUid: $firebaseUid) {
+    id
+    name
+    email
+    firebaseUid
+    schoolName
+    majorName
+    fieldOfStudyId
+    schoolYearId
+    createdAt
+    updatedAt
+  }
+}
+
+query GetCurrentCompany($firebaseUid: String!) {
+  company(firebaseUid: $firebaseUid) {
+    id
+    name
+    email
+    firebaseUid
+    prefecture
+    municipality
+    addressLine
+    createdAt
+    updatedAt
+  }
+}
