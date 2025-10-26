@@ -1,0 +1,130 @@
+query GetRooms($internId: ID, $companyId: ID) {
+  rooms(internId: $internId, companyId: $companyId) {
+    id
+    createdAt
+    updatedAt
+    intern {
+      id
+      name
+      email
+      schoolName
+      majorName
+    }
+    company {
+      id
+      name
+      email
+    }
+  }
+}
+
+query GetRoom($id: ID!) {
+  room(id: $id) {
+    id
+    createdAt
+    updatedAt
+    intern {
+      id
+      name
+      email
+      schoolName
+      majorName
+    }
+    company {
+      id
+      name
+      email
+    }
+    messages {
+      id
+      content
+      createdAt
+      readAt
+      sender {
+        ... on Intern {
+          id
+          name
+        }
+        ... on Company {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+query GetMessages($roomId: ID!) {
+  messages(roomId: $roomId) {
+    id
+    content
+    createdAt
+    readAt
+    sender {
+      ... on Intern {
+        id
+        name
+      }
+      ... on Company {
+        id
+        name
+      }
+    }
+  }
+}
+
+mutation CreateOrGetRoom($input: CreateOrGetRoomInput!) {
+  createOrGetRoom(input: $input) {
+    room {
+      id
+      createdAt
+      updatedAt
+      intern {
+        id
+        name
+      }
+      company {
+        id
+        name
+      }
+    }
+    errors
+  }
+}
+
+mutation SendMessage($input: SendMessageInput!) {
+  sendMessage(input: $input) {
+    message {
+      id
+      content
+      createdAt
+      sender {
+        ... on Intern {
+          id
+          name
+        }
+        ... on Company {
+          id
+          name
+        }
+      }
+    }
+    errors
+  }
+}
+
+mutation CreateIntern($input: CreateInternInput!) {
+  createIntern(input: $input) {
+    intern {
+      id
+      name
+      email
+      firebaseUid
+      schoolName
+      majorName
+      fieldOfStudyId
+      schoolYearId
+    }
+    errors
+  }
+}
