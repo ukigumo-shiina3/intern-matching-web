@@ -31,7 +31,7 @@ export default function SignIn(): React.JSX.Element {
     try {
       await signIn(email, password);
       toast.success("ログインしました");
-      router.push("/");
+      router.push("/intern/message");
     } catch (error) {
       console.error("ログインエラー:", error);
       toast.error("メールアドレスまたはパスワードが正しくありません");
