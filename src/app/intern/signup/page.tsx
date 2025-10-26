@@ -10,7 +10,7 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/lib/firebase/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useCreateIntern } from "@/lib/graphql/mutations/useCreateIntern";
+import { useCreateInternMutation } from "@/lib/graphql";
 
 export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +25,7 @@ export default function SignUp(): React.JSX.Element {
 
   const { signUp } = useAuth();
   const router = useRouter();
-  const { createIntern, loading } = useCreateIntern();
+  const [createInternMutation, { loading }] = useCreateInternMutation();
   const fieldOfStudiesOptions = [
     { value: "law_policy", label: "法学・政策系" },
     { value: "economics_business", label: "経済・経営・商学系" },
@@ -92,15 +92,23 @@ export default function SignUp(): React.JSX.Element {
     try {
       const user = await signUp(email, password);
 
-      await createIntern({
-        firebaseUid: user.uid,
-        name: fullName,
-        email: email,
-        schoolName: schoolName,
-        majorName: departmentName,
-        fieldOfStudyId: fieldOfStudy,
-        schoolYearId: schoolYear,
-      }, user.token);
+      const result = await createInternMutation({
+        variables: {
+          input: {
+            firebaseUid: user.uid,
+            name: fullName,
+            email: email,
+            schoolName: schoolName,
+            majorName: departmentName,
+            fieldOfStudyId: fieldOfStudy,
+            schoolYearId: schoolYear,
+          },
+        },
+      });
+
+      if (result.data?.createIntern?.errors && result.data.createIntern.errors.length > 0) {
+        throw new Error(result.data.createIntern.errors.join(", "));
+      }
 
       toast.success("アカウント登録が完了しました");
       router.push("/");
