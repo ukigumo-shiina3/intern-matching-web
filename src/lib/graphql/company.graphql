@@ -1,0 +1,44 @@
+mutation CreateCompany(
+  $firebaseUid: String!
+  $name: String!
+  $email: String!
+  $prefecture: String!
+  $municipality: String!
+  $addressLine: String!
+) {
+  createCompany(
+    input: {
+      firebaseUid: $firebaseUid
+      name: $name
+      email: $email
+      prefecture: $prefecture
+      municipality: $municipality
+      addressLine: $addressLine
+    }
+  ) {
+    company {
+      id
+      firebaseUid
+      name
+      email
+      prefecture
+      municipality
+      addressLine
+    }
+    errors
+  }
+}
+
+query GetCompany($firebaseUid: String, $id: ID) {
+  company(firebaseUid: $firebaseUid, id: $id) {
+    id
+    firebaseUid
+    name
+    email
+    prefecture
+    municipality
+    addressLine
+    createdAt
+    updatedAt
+  }
+}
