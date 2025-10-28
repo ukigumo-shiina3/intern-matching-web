@@ -5,9 +5,40 @@ import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
+import { useAuth } from "@/lib/firebase/utils";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function SignIn(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { signIn } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("メールアドレスとパスワードを入力してください");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await signIn(email, password);
+      toast.success("ログインしました");
+      router.push("/company/message");
+    } catch (error) {
+      console.error("ログインエラー:", error);
+      toast.error("メールアドレスまたはパスワードが正しくありません");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col flex-1 pt-24 w-full overflow-y-auto no-scrollbar">
@@ -19,7 +50,7 @@ export default function SignIn(): React.JSX.Element {
             </h1>
           </div>
           <div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-5">
                 <div className="grid gap-5">
                   <div>
@@ -31,6 +62,9 @@ export default function SignIn(): React.JSX.Element {
                       id="email"
                       name="email"
                       placeholder="example@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
                   <div>
@@ -41,6 +75,9 @@ export default function SignIn(): React.JSX.Element {
                       <Input
                         placeholder="password"
                         type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
                       <span
                         onClick={() => setShowPassword(!showPassword)}
@@ -55,10 +92,15 @@ export default function SignIn(): React.JSX.Element {
                     </div>
                   </div>
                   <div>
-                    <Button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600">
-                      ログイン
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading ? "ログイン中..." : "ログイン"}
                     </Button>
                   </div>
+
                   <div className="mt-5">
                     <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                       アカウントをお持ちでない方は、
