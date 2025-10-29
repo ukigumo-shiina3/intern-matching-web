@@ -82,10 +82,7 @@ export default function CompanyChatScreen() {
           input: {
             roomId: selectedRoomId,
             content,
-            internId:
-              currentUser.type === "intern" ? currentUser.id : undefined,
-            companyId:
-              currentUser.type === "company" ? currentUser.id : undefined,
+            companyId: currentUser.id,
           },
         },
         refetchQueries: ["GetMessages"],
@@ -96,10 +93,7 @@ export default function CompanyChatScreen() {
   };
 
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
-  const otherParty =
-    currentUser?.type === "intern"
-      ? selectedRoom?.company
-      : selectedRoom?.intern;
+  const otherParty = selectedRoom?.intern;
 
   if (!isMounted || userLoading) {
     return (
