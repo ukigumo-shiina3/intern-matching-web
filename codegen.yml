@@ -43,6 +43,8 @@ generates:
       ## __typenameフィールドの出力を抑制する
       skipTypename: true
       maybeValue: "T"
+      scalars:
+        ISO8601DateTime: string
 
   ./graphql.schema.json:
     plugins:

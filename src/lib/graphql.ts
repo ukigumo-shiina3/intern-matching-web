@@ -16,7 +16,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   /** An ISO 8601-encoded datetime */
-  ISO8601DateTime: { input: any; output: any; }
+  ISO8601DateTime: { input: string; output: string; }
 };
 
 export type G_Company = {
@@ -259,7 +259,7 @@ export type G_GetCompanyQueryVariables = Exact<{
 }>;
 
 
-export type G_GetCompanyQuery = { company?: { id: string, firebaseUid: string, name: string, email: string, prefecture: string, municipality: string, addressLine: string, createdAt: any, updatedAt: any } };
+export type G_GetCompanyQuery = { company?: { id: string, firebaseUid: string, name: string, email: string, prefecture: string, municipality: string, addressLine: string, createdAt: string, updatedAt: string } };
 
 export type G_GetRoomsQueryVariables = Exact<{
   internId?: InputMaybe<Scalars['ID']['input']>;
@@ -267,14 +267,14 @@ export type G_GetRoomsQueryVariables = Exact<{
 }>;
 
 
-export type G_GetRoomsQuery = { rooms: Array<{ id: string, createdAt: any, updatedAt: any, intern: { id: string, name: string, email: string, schoolName: string, majorName: string }, company: { id: string, name: string, email: string } }> };
+export type G_GetRoomsQuery = { rooms: Array<{ id: string, createdAt: string, updatedAt: string, intern: { id: string, name: string, email: string, schoolName: string, majorName: string }, company: { id: string, name: string, email: string } }> };
 
 export type G_GetRoomQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type G_GetRoomQuery = { room?: { id: string, createdAt: any, updatedAt: any, intern: { id: string, name: string, email: string, schoolName: string, majorName: string }, company: { id: string, name: string, email: string }, messages: Array<{ id: string, content: string, createdAt: any, readAt?: any, sender:
+export type G_GetRoomQuery = { room?: { id: string, createdAt: string, updatedAt: string, intern: { id: string, name: string, email: string, schoolName: string, majorName: string }, company: { id: string, name: string, email: string }, messages: Array<{ id: string, content: string, createdAt: string, readAt?: string, sender:
         | { id: string, name: string }
         | { id: string, name: string }
        }> } };
@@ -284,7 +284,7 @@ export type G_GetMessagesQueryVariables = Exact<{
 }>;
 
 
-export type G_GetMessagesQuery = { messages: Array<{ id: string, content: string, createdAt: any, readAt?: any, sender:
+export type G_GetMessagesQuery = { messages: Array<{ id: string, content: string, createdAt: string, readAt?: string, sender:
       | { id: string, name: string }
       | { id: string, name: string }
      }> };
@@ -294,14 +294,14 @@ export type G_CreateOrGetRoomMutationVariables = Exact<{
 }>;
 
 
-export type G_CreateOrGetRoomMutation = { createOrGetRoom?: { errors: Array<string>, room: { id: string, createdAt: any, updatedAt: any, intern: { id: string, name: string }, company: { id: string, name: string } } } };
+export type G_CreateOrGetRoomMutation = { createOrGetRoom?: { errors: Array<string>, room: { id: string, createdAt: string, updatedAt: string, intern: { id: string, name: string }, company: { id: string, name: string } } } };
 
 export type G_SendMessageMutationVariables = Exact<{
   input: G_SendMessageInput;
 }>;
 
 
-export type G_SendMessageMutation = { sendMessage?: { errors: Array<string>, message?: { id: string, content: string, createdAt: any, sender:
+export type G_SendMessageMutation = { sendMessage?: { errors: Array<string>, message?: { id: string, content: string, createdAt: string, sender:
         | { id: string, name: string }
         | { id: string, name: string }
        } } };
@@ -318,14 +318,14 @@ export type G_GetCurrentInternQueryVariables = Exact<{
 }>;
 
 
-export type G_GetCurrentInternQuery = { intern?: { id: string, name: string, email: string, firebaseUid: string, schoolName: string, majorName: string, fieldOfStudyId: string, schoolYearId: string, createdAt: any, updatedAt: any } };
+export type G_GetCurrentInternQuery = { intern?: { id: string, name: string, email: string, firebaseUid: string, schoolName: string, majorName: string, fieldOfStudyId: string, schoolYearId: string, createdAt: string, updatedAt: string } };
 
 export type G_GetCurrentCompanyQueryVariables = Exact<{
   firebaseUid: Scalars['String']['input'];
 }>;
 
 
-export type G_GetCurrentCompanyQuery = { company?: { id: string, name: string, email: string, firebaseUid: string, prefecture: string, municipality: string, addressLine: string, createdAt: any, updatedAt: any } };
+export type G_GetCurrentCompanyQuery = { company?: { id: string, name: string, email: string, firebaseUid: string, prefecture: string, municipality: string, addressLine: string, createdAt: string, updatedAt: string } };
 
 
 export const CreateCompanyDocument = gql`
