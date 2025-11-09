@@ -22,8 +22,13 @@ export const setUser = async (fbUser: FirebaseUser): Promise<User> => {
     token,
     email: email as string,
   } as User;
+
+  const isProduction = process.env.NODE_ENV === "production";
+
   cookies.set("auth", JSON.stringify(user), {
     expires: 3650, // expires 10 years(= 365days * 10)
+    secure: isProduction,
+    sameSite: "lax",
   });
   return user;
 };
@@ -33,7 +38,11 @@ export const createFirebaseUser = async (
   password: string
 ): Promise<FirebaseUserCredential> => {
   const auth = getAuth(firebase);
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
   return credential;
 };
 
