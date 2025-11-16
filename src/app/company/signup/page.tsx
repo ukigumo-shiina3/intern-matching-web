@@ -24,7 +24,6 @@ export default function SignUp(): React.JSX.Element {
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [title, setTitle] = useState("");
-  const [website, setWebsite] = useState("");
 
   const { signUp } = useAuth();
   const router = useRouter();
@@ -45,7 +44,6 @@ export default function SignUp(): React.JSX.Element {
       !city ||
       !address ||
       !title ||
-      !website ||
       !message
     ) {
       toast.error("全ての必須項目を入力してください");
@@ -199,20 +197,6 @@ export default function SignUp(): React.JSX.Element {
                       placeholder="経営者の近くで学べる営業インターン"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="sm:col-span-1">
-                    <Label>
-                      ウェブURL<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="url"
-                      id="website"
-                      name="website"
-                      placeholder="https://example.com"
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
                       required
                     />
                   </div>
