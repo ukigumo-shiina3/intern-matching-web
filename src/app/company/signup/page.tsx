@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
@@ -10,7 +10,11 @@ import Radio from "../../../../components/form/input/Radio";
 import { useAuth } from "@/lib/firebase/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useCreateCompanyMutation } from "@/lib/graphql";
+import {
+  useCreateCompanyMutation,
+  useGetPrefecturesQuery,
+  useGetMunicipalitiesQuery,
+} from "@/lib/graphql";
 
 export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,14 +24,27 @@ export default function SignUp(): React.JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [prefecture, setPrefecture] = useState("");
-  const [city, setCity] = useState("");
+  const [prefectureId, setPrefectureId] = useState("");
+  const [municipalityId, setMunicipalityId] = useState("");
   const [address, setAddress] = useState("");
   const [title, setTitle] = useState("");
 
   const { signUp } = useAuth();
   const router = useRouter();
   const [createCompanyMutation, { loading }] = useCreateCompanyMutation();
+
+  const { data: prefecturesData, loading: prefecturesLoading } =
+    useGetPrefecturesQuery();
+
+  const { data: municipalitiesData, loading: municipalitiesLoading } =
+    useGetMunicipalitiesQuery({
+      variables: { prefectureId: prefectureId || undefined },
+      skip: !prefectureId,
+    });
+
+  useEffect(() => {
+    setMunicipalityId("");
+  }, [prefectureId]);
 
   const handleRadioChange = (value: string) => {
     setSelectedValue(value);
@@ -40,8 +57,8 @@ export default function SignUp(): React.JSX.Element {
       !email ||
       !password ||
       !companyName ||
-      !prefecture ||
-      !city ||
+      !prefectureId ||
+      !municipalityId ||
       !address ||
       !title ||
       !message
@@ -58,8 +75,8 @@ export default function SignUp(): React.JSX.Element {
           firebaseUid: user.uid,
           name: companyName,
           email: email,
-          prefecture: prefecture,
-          municipality: city,
+          prefectureId: prefectureId,
+          municipalityId: municipalityId,
           addressLine: address,
         },
       });
@@ -148,29 +165,49 @@ export default function SignUp(): React.JSX.Element {
                     <Label>
                       都道府県<span className="text-error-500">*</span>
                     </Label>
-                    <Input
-                      type="text"
+                    <select
                       id="prefecture"
                       name="prefecture"
-                      placeholder="東京都"
-                      value={prefecture}
-                      onChange={(e) => setPrefecture(e.target.value)}
+                      value={prefectureId}
+                      onChange={(e) => setPrefectureId(e.target.value)}
                       required
-                    />
+                      disabled={prefecturesLoading}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">都道府県を選択してください</option>
+                      {prefecturesData?.prefectures.map((prefecture) => (
+                        <option key={prefecture.id} value={prefecture.id}>
+                          {prefecture.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="sm:col-span-1">
                     <Label>
                       市区町村<span className="text-error-500">*</span>
                     </Label>
-                    <Input
-                      type="text"
-                      id="city"
-                      name="city"
-                      placeholder="中央区"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
+                    <select
+                      id="municipality"
+                      name="municipality"
+                      value={municipalityId}
+                      onChange={(e) => setMunicipalityId(e.target.value)}
                       required
-                    />
+                      disabled={!prefectureId || municipalitiesLoading}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-gray-700"
+                    >
+                      <option value="">
+                        {!prefectureId
+                          ? "まず都道府県を選択してください"
+                          : "市区町村を選択してください"}
+                      </option>
+                      {municipalitiesData?.municipalities.map(
+                        (municipality) => (
+                          <option key={municipality.id} value={municipality.id}>
+                            {municipality.name}
+                          </option>
+                        )
+                      )}
+                    </select>
                   </div>
                   <div className="sm:col-span-1">
                     <Label>
