@@ -150,8 +150,14 @@ query GetCurrentCompany($firebaseUid: String!) {
     name
     email
     firebaseUid
-    prefecture
-    municipality
+    prefecture {
+      id
+      name
+    }
+    municipality {
+      id
+      name
+    }
     addressLine
     createdAt
     updatedAt

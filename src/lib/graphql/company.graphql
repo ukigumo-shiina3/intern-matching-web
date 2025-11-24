@@ -2,8 +2,8 @@ mutation CreateCompany(
   $firebaseUid: String!
   $name: String!
   $email: String!
-  $prefecture: String!
-  $municipality: String!
+  $prefectureId: ID!
+  $municipalityId: ID!
   $addressLine: String!
 ) {
   createCompany(
@@ -11,8 +11,8 @@ mutation CreateCompany(
       firebaseUid: $firebaseUid
       name: $name
       email: $email
-      prefecture: $prefecture
-      municipality: $municipality
+      prefectureId: $prefectureId
+      municipalityId: $municipalityId
       addressLine: $addressLine
     }
   ) {
@@ -21,8 +21,14 @@ mutation CreateCompany(
       firebaseUid
       name
       email
-      prefecture
-      municipality
+      prefecture {
+        id
+        name
+      }
+      municipality {
+        id
+        name
+      }
       addressLine
     }
     errors
@@ -35,10 +41,34 @@ query GetCompany($firebaseUid: String, $id: ID) {
     firebaseUid
     name
     email
-    prefecture
-    municipality
+    prefecture {
+      id
+      name
+    }
+    municipality {
+      id
+      name
+    }
     addressLine
     createdAt
     updatedAt
+  }
+}
+
+query GetPrefectures {
+  prefectures {
+    id
+    name
+  }
+}
+
+query GetMunicipalities($prefectureId: ID) {
+  municipalities(prefectureId: $prefectureId) {
+    id
+    name
+    prefecture {
+      id
+      name
+    }
   }
 }
