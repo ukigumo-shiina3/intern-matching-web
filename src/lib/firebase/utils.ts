@@ -5,6 +5,7 @@ import {
   UserCredential as FirebaseUserCredential,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { useState, useEffect } from "react";
 import cookies from "js-cookie";
 import firebase from "./initFirebase";
 
@@ -63,20 +64,40 @@ export const loginFirebaseUser = async (
 };
 
 export const useAuth = () => {
+  const [user, setUserState] = useState<User | null>(null);
+
+  useEffect(() => {
+    const authCookie = cookies.get("auth");
+    if (authCookie) {
+      try {
+        const userData = JSON.parse(authCookie) as User;
+        setUserState(userData);
+      } catch (error) {
+        console.error("Cookie解析エラー:", error);
+        cookies.remove("auth");
+      }
+    }
+  }, []);
+
   const signIn = async (email: string, password: string): Promise<User> => {
-    const user = await loginFirebaseUser(email, password);
-    if (!user) {
+    const fbUser = await loginFirebaseUser(email, password);
+    if (!fbUser) {
       throw new Error("無効な認証情報です");
     }
-    return setUser(user);
+    const userData = await setUser(fbUser);
+    setUserState(userData);
+    return userData;
   };
 
   const signUp = async (email: string, password: string): Promise<User> => {
     const credential = await createFirebaseUser(email, password);
-    return setUser(credential.user);
+    const userData = await setUser(credential.user);
+    setUserState(userData);
+    return userData;
   };
 
   return {
+    user,
     signIn,
     signUp,
   };
