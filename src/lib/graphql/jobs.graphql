@@ -1,0 +1,103 @@
+mutation CreateJob(
+  $companyId: ID!
+  $title: String!
+  $internConditions: String!
+  $isPublished: Boolean!
+) {
+  createJob(
+    input: {
+      companyId: $companyId
+      title: $title
+      internConditions: $internConditions
+      isPublished: $isPublished
+    }
+  ) {
+    job {
+      id
+      companyId
+      title
+      internConditions
+      isPublished
+      createdAt
+      updatedAt
+    }
+    errors
+  }
+}
+
+mutation UpdateJob(
+  $id: ID!
+  $title: String
+  $internConditions: String
+  $isPublished: Boolean
+) {
+  updateJob(
+    input: {
+      id: $id
+      title: $title
+      internConditions: $internConditions
+      isPublished: $isPublished
+    }
+  ) {
+    job {
+      id
+      companyId
+      title
+      internConditions
+      isPublished
+      createdAt
+      updatedAt
+    }
+    errors
+  }
+}
+
+query GetJobs($companyId: ID, $isPublished: Boolean) {
+  jobs(companyId: $companyId, isPublished: $isPublished) {
+    id
+    companyId
+    company {
+      id
+      name
+      prefecture {
+        id
+        name
+      }
+      municipality {
+        id
+        name
+      }
+      addressLine
+    }
+    title
+    internConditions
+    isPublished
+    createdAt
+    updatedAt
+  }
+}
+
+query GetJob($id: ID!) {
+  job(id: $id) {
+    id
+    companyId
+    company {
+      id
+      name
+      prefecture {
+        id
+        name
+      }
+      municipality {
+        id
+        name
+      }
+      addressLine
+    }
+    title
+    internConditions
+    isPublished
+    createdAt
+    updatedAt
+  }
+}
