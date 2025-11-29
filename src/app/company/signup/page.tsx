@@ -5,8 +5,6 @@ import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
-import TextArea from "../../../../components/form/input/TextArea";
-import Radio from "../../../../components/form/input/Radio";
 import { useAuth } from "@/lib/firebase/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -18,8 +16,6 @@ import {
 
 export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
-  const [selectedValue, setSelectedValue] = useState<string>("option1");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +23,6 @@ export default function SignUp(): React.JSX.Element {
   const [prefectureId, setPrefectureId] = useState("");
   const [municipalityId, setMunicipalityId] = useState("");
   const [address, setAddress] = useState("");
-  const [title, setTitle] = useState("");
 
   const { signUp } = useAuth();
   const router = useRouter();
@@ -46,10 +41,6 @@ export default function SignUp(): React.JSX.Element {
     setMunicipalityId("");
   }, [prefectureId]);
 
-  const handleRadioChange = (value: string) => {
-    setSelectedValue(value);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -59,9 +50,7 @@ export default function SignUp(): React.JSX.Element {
       !companyName ||
       !prefectureId ||
       !municipalityId ||
-      !address ||
-      !title ||
-      !message
+      !address
     ) {
       toast.error("全ての必須項目を入力してください");
       return;
@@ -89,7 +78,7 @@ export default function SignUp(): React.JSX.Element {
       }
 
       toast.success("アカウント登録が完了しました");
-      router.push("/company/message");
+      router.push("/company/jobs/create");
     } catch (error) {
       console.error("新規登録エラー:", error);
       toast.error("アカウント登録に失敗しました");
@@ -222,55 +211,6 @@ export default function SignUp(): React.JSX.Element {
                       onChange={(e) => setAddress(e.target.value)}
                       required
                     />
-                  </div>
-                  <div className="sm:col-span-1">
-                    <Label>
-                      タイトル<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="title"
-                      name="title"
-                      placeholder="経営者の近くで学べる営業インターン"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="sm:col-span-1">
-                    <Label>
-                      インターン条件<span className="text-error-500">*</span>
-                    </Label>
-                    <TextArea
-                      value={message}
-                      onChange={(value) => setMessage(value)}
-                      rows={6}
-                      placeholder={`【必須】弊社のソーシャルビジョンに共感していただける方／自ら役割を考え、行動できる方
-【歓迎】長期インターンにコミットできる方／事業作りに興味関心がある方`}
-                    />
-                  </div>
-                  <div className="sm:col-span-1">
-                    <Label>
-                      企業公開<span className="text-error-500">*</span>
-                    </Label>
-                    <div className="space-y-3">
-                      <Radio
-                        id="radio-public"
-                        name="radio"
-                        value="option1"
-                        checked={selectedValue === "option1"}
-                        onChange={handleRadioChange}
-                        label="公開"
-                      />
-                      <Radio
-                        id="radio-private"
-                        name="radio"
-                        value="option2"
-                        checked={selectedValue === "option2"}
-                        onChange={handleRadioChange}
-                        label="非公開"
-                      />
-                    </div>
                   </div>
                 </div>
                 <div>
