@@ -78,7 +78,7 @@ export default function SignUp(): React.JSX.Element {
       }
 
       toast.success("アカウント登録が完了しました");
-      router.push("/company/jobs/create");
+      router.push("/company/jobs");
     } catch (error) {
       console.error("新規登録エラー:", error);
       toast.error("アカウント登録に失敗しました");
