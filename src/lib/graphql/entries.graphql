@@ -1,0 +1,49 @@
+mutation CreateEntry($internId: ID!, $jobId: ID!) {
+  createEntry(input: { internId: $internId, jobId: $jobId }) {
+    entry {
+      id
+      internId
+      jobId
+      currentStatus
+      createdAt
+      updatedAt
+    }
+    errors
+  }
+}
+
+query GetEntries($internId: ID, $jobId: ID) {
+  entries(internId: $internId, jobId: $jobId) {
+    id
+    internId
+    jobId
+    currentStatus
+    createdAt
+    updatedAt
+    job {
+      id
+      title
+      internConditions
+      isPublished
+      company {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetIntern($firebaseUid: String, $id: ID) {
+  intern(firebaseUid: $firebaseUid, id: $id) {
+    id
+    firebaseUid
+    name
+    email
+    schoolName
+    majorName
+    fieldOfStudyId
+    schoolYearId
+    createdAt
+    updatedAt
+  }
+}
