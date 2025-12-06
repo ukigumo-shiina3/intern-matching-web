@@ -7,8 +7,10 @@ import {
   useGetInternQuery,
   useCreateEntryMutation,
   useGetEntriesQuery,
+  useCreateOrGetRoomMutation,
 } from "@/lib/graphql";
 import { useAuth } from "@/lib/firebase/utils";
+import { useRouter } from "next/navigation";
 import Button from "../../../../../components/ui/button/Button";
 import toast from "react-hot-toast";
 
@@ -16,6 +18,7 @@ export default function InternJobDetail(): React.JSX.Element {
   const params = useParams();
   const jobId = params.id as string;
   const { user } = useAuth();
+  const router = useRouter();
   const [isApplying, setIsApplying] = useState(false);
 
   const { data, loading, error } = useGetJobQuery({
@@ -34,6 +37,7 @@ export default function InternJobDetail(): React.JSX.Element {
   });
 
   const [createEntryMutation] = useCreateEntryMutation();
+  const [createOrGetRoomMutation] = useCreateOrGetRoomMutation();
 
   const hasApplied = entriesData?.entries && entriesData.entries.length > 0;
 
@@ -43,10 +47,15 @@ export default function InternJobDetail(): React.JSX.Element {
       return;
     }
 
+    if (!data?.job?.company?.id) {
+      toast.error("企業情報の取得に失敗しました");
+      return;
+    }
+
     setIsApplying(true);
 
     try {
-      const result = await createEntryMutation({
+      const entryResult = await createEntryMutation({
         variables: {
           internId: internData.intern.id,
           jobId: jobId,
@@ -55,13 +64,37 @@ export default function InternJobDetail(): React.JSX.Element {
       });
 
       if (
-        result.data?.createEntry?.errors &&
-        result.data.createEntry.errors.length > 0
+        entryResult.data?.createEntry?.errors &&
+        entryResult.data.createEntry.errors.length > 0
       ) {
-        toast.error(result.data.createEntry.errors.join(", "));
-      } else {
-        toast.success("応募しました");
+        toast.error(entryResult.data.createEntry.errors.join(", "));
+        return;
       }
+
+      toast.success("応募しました");
+
+      const roomResult = await createOrGetRoomMutation({
+        variables: {
+          input: {
+            internId: internData.intern.id,
+            companyId: data.job.company.id,
+          },
+        },
+      });
+
+      if (
+        roomResult.data?.createOrGetRoom?.errors &&
+        roomResult.data.createOrGetRoom.errors.length > 0
+      ) {
+        console.error(
+          "ルーム作成エラー:",
+          roomResult.data.createOrGetRoom.errors
+        );
+        toast.error("チャットルームの作成に失敗しました");
+        return;
+      }
+
+      router.push("/intern/message");
     } catch (error) {
       console.error("応募エラー:", error);
       toast.error("応募に失敗しました");
