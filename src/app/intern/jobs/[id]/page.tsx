@@ -1,18 +1,74 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useGetJobQuery } from "@/lib/graphql";
+import {
+  useGetJobQuery,
+  useGetInternQuery,
+  useCreateEntryMutation,
+  useGetEntriesQuery,
+} from "@/lib/graphql";
+import { useAuth } from "@/lib/firebase/utils";
 import Button from "../../../../../components/ui/button/Button";
+import toast from "react-hot-toast";
 
 export default function InternJobDetail(): React.JSX.Element {
   const params = useParams();
   const jobId = params.id as string;
+  const { user } = useAuth();
+  const [isApplying, setIsApplying] = useState(false);
 
   const { data, loading, error } = useGetJobQuery({
     variables: { id: jobId },
     skip: !jobId,
   });
+
+  const { data: internData } = useGetInternQuery({
+    variables: { firebaseUid: user?.uid },
+    skip: !user?.uid,
+  });
+
+  const { data: entriesData } = useGetEntriesQuery({
+    variables: { internId: internData?.intern?.id, jobId },
+    skip: !internData?.intern?.id || !jobId,
+  });
+
+  const [createEntryMutation] = useCreateEntryMutation();
+
+  const hasApplied = entriesData?.entries && entriesData.entries.length > 0;
+
+  const handleApply = async () => {
+    if (!internData?.intern?.id) {
+      toast.error("ログインしてください");
+      return;
+    }
+
+    setIsApplying(true);
+
+    try {
+      const result = await createEntryMutation({
+        variables: {
+          internId: internData.intern.id,
+          jobId: jobId,
+        },
+        refetchQueries: ["GetEntries"],
+      });
+
+      if (
+        result.data?.createEntry?.errors &&
+        result.data.createEntry.errors.length > 0
+      ) {
+        toast.error(result.data.createEntry.errors.join(", "));
+      } else {
+        toast.success("応募しました");
+      }
+    } catch (error) {
+      console.error("応募エラー:", error);
+      toast.error("応募に失敗しました");
+    } finally {
+      setIsApplying(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -104,6 +160,27 @@ export default function InternJobDetail(): React.JSX.Element {
                   {job.internConditions}
                 </p>
               </div>
+            </div>
+
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+              {hasApplied ? (
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                  <p className="text-green-800 dark:text-green-300 font-medium">
+                    応募済み
+                  </p>
+                  <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                    この求人には既に応募しています
+                  </p>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleApply}
+                  disabled={isApplying}
+                  className="w-full px-6 py-3 text-base font-medium text-white transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isApplying ? "応募中..." : "この求人に応募する"}
+                </Button>
+              )}
             </div>
           </div>
         </div>
