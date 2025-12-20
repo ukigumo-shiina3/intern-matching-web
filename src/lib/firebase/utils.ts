@@ -4,6 +4,7 @@ import {
   User as FirebaseUser,
   UserCredential as FirebaseUserCredential,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { useState, useEffect } from "react";
 import cookies from "js-cookie";
@@ -96,9 +97,17 @@ export const useAuth = () => {
     return userData;
   };
 
+  const logout = async (): Promise<void> => {
+    cookies.remove("auth");
+    setUserState(null);
+    const auth = getAuth(firebase);
+    await signOut(auth);
+  };
+
   return {
     user,
     signIn,
     signUp,
+    logout,
   };
 };

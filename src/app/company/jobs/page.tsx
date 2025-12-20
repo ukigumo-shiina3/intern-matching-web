@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useGetJobsQuery, useGetCompanyQuery } from "@/lib/graphql";
 import { useAuth } from "@/lib/firebase/utils";
 import Button from "../../../../components/ui/button/Button";
+import toast from "react-hot-toast";
 
 export default function JobsList(): React.JSX.Element {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   const { data: companyData, loading: companyLoading } = useGetCompanyQuery({
@@ -19,6 +20,17 @@ export default function JobsList(): React.JSX.Element {
     variables: { companyId: companyData?.company?.id },
     skip: !companyData?.company?.id,
   });
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("ログアウトしました");
+      router.push("/company/signin");
+    } catch (error) {
+      console.error("ログアウトエラー:", error);
+      toast.error("ログアウトに失敗しました");
+    }
+  };
 
   if (companyLoading || jobsLoading) {
     return (
@@ -57,11 +69,46 @@ export default function JobsList(): React.JSX.Element {
                 </svg>
                 メッセージ
               </button>
-              <Link href="/company/jobs/create">
-                <Button className="px-4 py-2 text-sm font-medium text-white transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600">
-                  新規募集を作成
-                </Button>
-              </Link>
+              <button
+                onClick={() => router.push("/company/jobs/create")}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors shadow-sm"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+                新規募集を作成
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors shadow-sm"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+                  />
+                </svg>
+                ログアウト
+              </button>
             </div>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">
