@@ -6,7 +6,7 @@ import {
   useGetJobQuery,
   useGetInternQuery,
   useCreateEntryMutation,
-  useGetEntriesQuery,
+  useHasAppliedToJobQuery,
   useCreateOrGetRoomMutation,
 } from "@/lib/graphql";
 import { useAuth } from "@/lib/firebase/utils";
@@ -31,7 +31,7 @@ export default function InternJobDetail(): React.JSX.Element {
     skip: !user?.uid,
   });
 
-  const { data: entriesData } = useGetEntriesQuery({
+  const { data: entriesData } = useHasAppliedToJobQuery({
     variables: { internId: internData?.intern?.id, jobId },
     skip: !internData?.intern?.id || !jobId,
   });
@@ -60,7 +60,7 @@ export default function InternJobDetail(): React.JSX.Element {
           internId: internData.intern.id,
           jobId: jobId,
         },
-        refetchQueries: ["GetEntries"],
+        refetchQueries: ["HasAppliedToJob"],
       });
 
       if (

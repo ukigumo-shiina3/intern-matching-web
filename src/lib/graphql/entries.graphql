@@ -12,7 +12,7 @@ mutation CreateEntry($internId: ID!, $jobId: ID!) {
   }
 }
 
-query GetEntries($internId: ID, $jobId: ID) {
+query HasAppliedToJob($internId: ID, $jobId: ID) {
   entries(internId: $internId, jobId: $jobId) {
     id
     internId

@@ -382,13 +382,13 @@ export type G_CreateEntryMutationVariables = Exact<{
 
 export type G_CreateEntryMutation = { createEntry?: { errors: Array<string>, entry?: { id: string, internId: string, jobId: string, currentStatus: string, createdAt: string, updatedAt: string } } };
 
-export type G_GetEntriesQueryVariables = Exact<{
+export type G_HasAppliedToJobQueryVariables = Exact<{
   internId?: InputMaybe<Scalars['ID']['input']>;
   jobId?: InputMaybe<Scalars['ID']['input']>;
 }>;
 
 
-export type G_GetEntriesQuery = { entries: Array<{ id: string, internId: string, jobId: string, currentStatus: string, createdAt: string, updatedAt: string, job: { id: string, title: string, internConditions: string, isPublished: boolean, company: { id: string, name: string } } }> };
+export type G_HasAppliedToJobQuery = { entries: Array<{ id: string, internId: string, jobId: string, currentStatus: string, createdAt: string, updatedAt: string, job: { id: string, title: string, internConditions: string, isPublished: boolean, company: { id: string, name: string } } }> };
 
 export type G_GetInternQueryVariables = Exact<{
   firebaseUid?: InputMaybe<Scalars['String']['input']>;
@@ -737,8 +737,8 @@ export function useCreateEntryMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateEntryMutationHookResult = ReturnType<typeof useCreateEntryMutation>;
 export type CreateEntryMutationResult = Apollo.MutationResult<G_CreateEntryMutation>;
 export type CreateEntryMutationOptions = Apollo.BaseMutationOptions<G_CreateEntryMutation, G_CreateEntryMutationVariables>;
-export const GetEntriesDocument = gql`
-    query GetEntries($internId: ID, $jobId: ID) {
+export const HasAppliedToJobDocument = gql`
+    query HasAppliedToJob($internId: ID, $jobId: ID) {
   entries(internId: $internId, jobId: $jobId) {
     id
     internId
@@ -761,38 +761,38 @@ export const GetEntriesDocument = gql`
     `;
 
 /**
- * __useGetEntriesQuery__
+ * __useHasAppliedToJobQuery__
  *
- * To run a query within a React component, call `useGetEntriesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetEntriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHasAppliedToJobQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHasAppliedToJobQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetEntriesQuery({
+ * const { data, loading, error } = useHasAppliedToJobQuery({
  *   variables: {
  *      internId: // value for 'internId'
  *      jobId: // value for 'jobId'
  *   },
  * });
  */
-export function useGetEntriesQuery(baseOptions?: Apollo.QueryHookOptions<G_GetEntriesQuery, G_GetEntriesQueryVariables>) {
+export function useHasAppliedToJobQuery(baseOptions?: Apollo.QueryHookOptions<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<G_GetEntriesQuery, G_GetEntriesQueryVariables>(GetEntriesDocument, options);
+        return Apollo.useQuery<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>(HasAppliedToJobDocument, options);
       }
-export function useGetEntriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G_GetEntriesQuery, G_GetEntriesQueryVariables>) {
+export function useHasAppliedToJobLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<G_GetEntriesQuery, G_GetEntriesQueryVariables>(GetEntriesDocument, options);
+          return Apollo.useLazyQuery<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>(HasAppliedToJobDocument, options);
         }
-export function useGetEntriesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<G_GetEntriesQuery, G_GetEntriesQueryVariables>) {
+export function useHasAppliedToJobSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<G_GetEntriesQuery, G_GetEntriesQueryVariables>(GetEntriesDocument, options);
+          return Apollo.useSuspenseQuery<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>(HasAppliedToJobDocument, options);
         }
-export type GetEntriesQueryHookResult = ReturnType<typeof useGetEntriesQuery>;
-export type GetEntriesLazyQueryHookResult = ReturnType<typeof useGetEntriesLazyQuery>;
-export type GetEntriesSuspenseQueryHookResult = ReturnType<typeof useGetEntriesSuspenseQuery>;
-export type GetEntriesQueryResult = Apollo.QueryResult<G_GetEntriesQuery, G_GetEntriesQueryVariables>;
+export type HasAppliedToJobQueryHookResult = ReturnType<typeof useHasAppliedToJobQuery>;
+export type HasAppliedToJobLazyQueryHookResult = ReturnType<typeof useHasAppliedToJobLazyQuery>;
+export type HasAppliedToJobSuspenseQueryHookResult = ReturnType<typeof useHasAppliedToJobSuspenseQuery>;
+export type HasAppliedToJobQueryResult = Apollo.QueryResult<G_HasAppliedToJobQuery, G_HasAppliedToJobQueryVariables>;
 export const GetInternDocument = gql`
     query GetIntern($firebaseUid: String, $id: ID) {
   intern(firebaseUid: $firebaseUid, id: $id) {
