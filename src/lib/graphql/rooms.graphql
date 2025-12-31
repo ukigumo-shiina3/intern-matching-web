@@ -113,22 +113,6 @@ mutation SendMessage($input: SendMessageInput!) {
   }
 }
 
-mutation CreateIntern($input: CreateInternInput!) {
-  createIntern(input: $input) {
-    intern {
-      id
-      name
-      email
-      firebaseUid
-      schoolName
-      majorName
-      fieldOfStudyId
-      schoolYearId
-    }
-    errors
-  }
-}
-
 query GetCurrentIntern($firebaseUid: String!) {
   intern(firebaseUid: $firebaseUid) {
     id
@@ -137,8 +121,14 @@ query GetCurrentIntern($firebaseUid: String!) {
     firebaseUid
     schoolName
     majorName
-    fieldOfStudyId
-    schoolYearId
+    fieldOfStudy {
+      id
+      name
+    }
+    schoolYear {
+      id
+      name
+    }
     createdAt
     updatedAt
   }

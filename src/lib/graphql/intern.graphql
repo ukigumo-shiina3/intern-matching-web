@@ -1,0 +1,53 @@
+mutation CreateIntern(
+  $firebaseUid: String!
+  $name: String!
+  $email: String!
+  $schoolName: String!
+  $majorName: String!
+  $fieldOfStudyId: ID!
+  $schoolYearId: ID!
+) {
+  createIntern(
+    input: {
+      firebaseUid: $firebaseUid
+      name: $name
+      email: $email
+      schoolName: $schoolName
+      majorName: $majorName
+      fieldOfStudyId: $fieldOfStudyId
+      schoolYearId: $schoolYearId
+    }
+  ) {
+    intern {
+      id
+      firebaseUid
+      name
+      email
+      schoolName
+      majorName
+      fieldOfStudy {
+        id
+        name
+      }
+      schoolYear {
+        id
+        name
+      }
+    }
+    errors
+  }
+}
+
+query GetSchoolYears {
+  schoolYears {
+    id
+    name
+  }
+}
+
+query GetFieldOfStudies {
+  fieldOfStudies {
+    id
+    name
+  }
+}

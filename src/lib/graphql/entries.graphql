@@ -41,8 +41,14 @@ query GetIntern($firebaseUid: String, $id: ID) {
     email
     schoolName
     majorName
-    fieldOfStudyId
-    schoolYearId
+    fieldOfStudy {
+      id
+      name
+    }
+    schoolYear {
+      id
+      name
+    }
     createdAt
     updatedAt
   }
