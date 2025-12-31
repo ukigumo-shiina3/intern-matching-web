@@ -10,7 +10,11 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/lib/firebase/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useCreateInternMutation } from "@/lib/graphql";
+import {
+  useCreateInternMutation,
+  useGetSchoolYearsQuery,
+  useGetFieldOfStudiesQuery,
+} from "@/lib/graphql";
 
 export default function SignUp(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,40 +30,23 @@ export default function SignUp(): React.JSX.Element {
   const { signUp } = useAuth();
   const router = useRouter();
   const [createInternMutation, { loading }] = useCreateInternMutation();
-  const fieldOfStudiesOptions = [
-    { value: "law_policy", label: "法学・政策系" },
-    { value: "economics_business", label: "経済・経営・商学系" },
-    { value: "social_media_environment", label: "社会・環境情報・メディア系" },
-    { value: "foreign_languages_international", label: "外国語・国際文化系" },
-    { value: "humanities", label: "人文系" },
-    { value: "education_psychology", label: "教育・心理系" },
-    { value: "arts_music_design", label: "芸術・音楽・デザイン系" },
-    { value: "physical_education_sports", label: "体育・スポーツ系" },
-    { value: "mechanical_engineering", label: "機械系" },
-    { value: "mathematics", label: "数学系" },
-    { value: "electrical_electronic_engineering", label: "電気・電子系" },
-    { value: "information_engineering", label: "情報工学系" },
-    { value: "physics_applied_physics", label: "物理・応用物理系" },
-    { value: "biology_life_sciences", label: "生物・生命科学系" },
-    { value: "chemistry_materials_engineering", label: "化学・物質工学系" },
-    { value: "resources_earth_environment", label: "資源・地球環境系" },
-    { value: "agriculture_fisheries_livestock", label: "農業・水産・畜産系" },
-    { value: "pharmaceutical_sciences", label: "薬学系" },
-    { value: "medicine_dentistry", label: "医学・歯学系" },
-    { value: "health_nursing_care", label: "保健・介護系" },
-    { value: "other_liberal_arts", label: "その他文系" },
-    { value: "other_sciences", label: "その他理系" },
-  ];
-  const schoolYearsOptions = [
-    { value: "first", label: "1年生" },
-    { value: "second", label: "2年生" },
-    { value: "third", label: "3年生" },
-    { value: "fourth", label: "4年生" },
-    { value: "graduate_school_first", label: "大学院1年生" },
-    { value: "graduate_school_second", label: "大学院2年生" },
-    { value: "graduated", label: "卒業済み" },
-    { value: "other", label: "その他" },
-  ];
+
+  const { data: schoolYearsData, loading: schoolYearsLoading } =
+    useGetSchoolYearsQuery();
+  const { data: fieldOfStudiesData, loading: fieldOfStudiesLoading } =
+    useGetFieldOfStudiesQuery();
+
+  const fieldOfStudiesOptions =
+    fieldOfStudiesData?.fieldOfStudies?.map((field) => ({
+      value: field.id,
+      label: field.name,
+    })) || [];
+
+  const schoolYearsOptions =
+    schoolYearsData?.schoolYears?.map((year) => ({
+      value: year.id,
+      label: year.name,
+    })) || [];
   const handleFieldOfStudyChange = (value: string) => {
     setFieldOfStudy(value);
   };
@@ -94,15 +81,13 @@ export default function SignUp(): React.JSX.Element {
 
       const result = await createInternMutation({
         variables: {
-          input: {
-            firebaseUid: user.uid,
-            name: fullName,
-            email: email,
-            schoolName: schoolName,
-            majorName: departmentName,
-            fieldOfStudyId: fieldOfStudy,
-            schoolYearId: schoolYear,
-          },
+          firebaseUid: user.uid,
+          name: fullName,
+          email: email,
+          schoolName: schoolName,
+          majorName: departmentName,
+          fieldOfStudyId: fieldOfStudy,
+          schoolYearId: schoolYear,
         },
       });
 
@@ -256,10 +241,16 @@ export default function SignUp(): React.JSX.Element {
                 <div>
                   <Button
                     type="submit"
-                    disabled={loading}
+                    disabled={
+                      loading || schoolYearsLoading || fieldOfStudiesLoading
+                    }
                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium  transition rounded-lg bg-blue-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? "登録中..." : "新規登録"}
+                    {loading
+                      ? "登録中..."
+                      : schoolYearsLoading || fieldOfStudiesLoading
+                        ? "読み込み中..."
+                        : "新規登録"}
                   </Button>
                 </div>
               </div>
