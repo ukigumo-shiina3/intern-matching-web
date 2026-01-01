@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useGetJobsQuery } from "@/lib/graphql";
+import { useGetPublishedJobsQuery } from "@/lib/graphql";
 import { useAuth } from "@/lib/firebase/utils";
 import toast from "react-hot-toast";
 
@@ -9,9 +9,7 @@ export default function InternJobsList(): React.JSX.Element {
   const router = useRouter();
   const { logout } = useAuth();
 
-  const { data: jobsData, loading: jobsLoading } = useGetJobsQuery({
-    variables: { isPublished: true },
-  });
+  const { data: jobsData, loading: jobsLoading } = useGetPublishedJobsQuery();
 
   const handleLogout = async () => {
     try {
@@ -88,7 +86,7 @@ export default function InternJobsList(): React.JSX.Element {
           </p>
         </div>
 
-        {!jobsData?.jobs || jobsData.jobs.length === 0 ? (
+        {!jobsData?.publishedJobs || jobsData.publishedJobs.length === 0 ? (
           <div className="flex flex-col items-center justify-center flex-1 py-12">
             <p className="mb-4 text-gray-600 dark:text-gray-400">
               現在公開中の募集はありません
@@ -96,7 +94,7 @@ export default function InternJobsList(): React.JSX.Element {
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {jobsData.jobs.map((job) => (
+            {jobsData.publishedJobs.map((job) => (
               <div
                 key={job.id}
                 className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-md transition-shadow cursor-pointer"

@@ -21,7 +21,6 @@ mutation CreateJob(
       createdAt
       updatedAt
     }
-    errors
   }
 }
 
@@ -48,12 +47,36 @@ mutation UpdateJob(
       createdAt
       updatedAt
     }
-    errors
   }
 }
 
-query GetJobs($companyId: ID, $isPublished: Boolean) {
-  jobs(companyId: $companyId, isPublished: $isPublished) {
+query GetCompanyJobs($companyId: ID!) {
+  companyJobs(companyId: $companyId) {
+    id
+    companyId
+    company {
+      id
+      name
+      prefecture {
+        id
+        name
+      }
+      municipality {
+        id
+        name
+      }
+      addressLine
+    }
+    title
+    internConditions
+    isPublished
+    createdAt
+    updatedAt
+  }
+}
+
+query GetPublishedJobs {
+  publishedJobs {
     id
     companyId
     company {

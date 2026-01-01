@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useGetJobsQuery, useGetCompanyQuery } from "@/lib/graphql";
+import { useGetCompanyJobsQuery, useGetCompanyQuery } from "@/lib/graphql";
 import { useAuth } from "@/lib/firebase/utils";
 import Button from "../../../../components/ui/button/Button";
 import toast from "react-hot-toast";
@@ -16,8 +16,8 @@ export default function JobsList(): React.JSX.Element {
     skip: !user?.uid,
   });
 
-  const { data: jobsData, loading: jobsLoading } = useGetJobsQuery({
-    variables: { companyId: companyData?.company?.id },
+  const { data: jobsData, loading: jobsLoading } = useGetCompanyJobsQuery({
+    variables: { companyId: companyData?.company?.id || "" },
     skip: !companyData?.company?.id,
   });
 
@@ -116,7 +116,7 @@ export default function JobsList(): React.JSX.Element {
           </p>
         </div>
 
-        {!jobsData?.jobs || jobsData.jobs.length === 0 ? (
+        {!jobsData?.companyJobs || jobsData.companyJobs.length === 0 ? (
           <div className="flex flex-col items-center justify-center flex-1 py-12">
             <p className="mb-4 text-gray-600 dark:text-gray-400">
               まだ募集が登録されていません
@@ -129,7 +129,7 @@ export default function JobsList(): React.JSX.Element {
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {jobsData.jobs.map((job) => (
+            {jobsData.companyJobs.map((job) => (
               <div
                 key={job.id}
                 className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-md transition-shadow cursor-pointer"
