@@ -34,7 +34,6 @@ mutation CreateIntern(
         name
       }
     }
-    errors
   }
 }
 

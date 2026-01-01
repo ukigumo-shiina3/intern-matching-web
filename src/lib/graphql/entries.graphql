@@ -8,7 +8,6 @@ mutation CreateEntry($internId: ID!, $jobId: ID!) {
       createdAt
       updatedAt
     }
-    errors
   }
 }
 
