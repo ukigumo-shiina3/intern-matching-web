@@ -79,7 +79,7 @@ export default function SignUp(): React.JSX.Element {
     try {
       const user = await signUp(email, password);
 
-      const result = await createInternMutation({
+      await createInternMutation({
         variables: {
           firebaseUid: user.uid,
           name: fullName,
@@ -91,18 +91,12 @@ export default function SignUp(): React.JSX.Element {
         },
       });
 
-      if (
-        result.data?.createIntern?.errors &&
-        result.data.createIntern.errors.length > 0
-      ) {
-        throw new Error(result.data.createIntern.errors.join(", "));
-      }
-
       toast.success("アカウント登録が完了しました");
       router.push("/intern/jobs");
     } catch (error) {
       console.error("新規登録エラー:", error);
-      toast.error("アカウント登録に失敗しました");
+      const errorMessage = error instanceof Error ? error.message : "アカウント登録に失敗しました";
+      toast.error(errorMessage);
     }
   };
   return (
